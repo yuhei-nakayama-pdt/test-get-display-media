@@ -1,0 +1,28 @@
+<html>
+<head>
+<title>Take Screenshot with getDisplayMedia</title>
+</head>
+<body>
+<button id="takeScreenShot">Take Screen Shot</button>
+<video id="videoElement" autoplay style="display: none;"></video>
+<script>
+takeScreenShot.addEventListener("click", async () => {
+  const captureStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+  videoElement.srcObject = captureStream;
+  window.captureStream = captureStream;
+  setTimeout(() => {
+    const canvas = document.createElement("canvas");
+    canvas.setAttribute("width", videoElement.videoWidth);
+    canvas.setAttribute("height", videoElement.videoHeight);
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(videoElement, 0, 0);
+    canvas.toBlob(blob => {
+      const blobUrl = URL.createObjectURL(blob);
+      window.open(blobUrl);
+      captureStream.getTracks().forEach(track => track.stop());
+    });
+  }, 500);
+});
+</script>
+</body>
+</html>
