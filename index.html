@@ -3,8 +3,10 @@
 <title>Take Screenshot with getDisplayMedia</title>
 </head>
 <body>
+<div>
 <button id="takeScreenShot">Take Screen Shot</button>
 <video id="videoElement" autoplay style="display: none;"></video>
+</div>
 <script>
 takeScreenShot.addEventListener("click", async () => {
   const captureStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
@@ -18,7 +20,12 @@ takeScreenShot.addEventListener("click", async () => {
     ctx.drawImage(videoElement, 0, 0);
     canvas.toBlob(blob => {
       const blobUrl = URL.createObjectURL(blob);
-      window.open(blobUrl);
+      const link = document.createElement("a");
+      link.textContent = "screenshot link";
+      link.href = blobUrl;
+      link.target = "_blank";
+      document.body.appendChild(link);
+      // window.open(blobUrl);
       captureStream.getTracks().forEach(track => track.stop());
     });
   }, 500);
